@@ -1,0 +1,98 @@
+
+
+import pylab
+import math
+
+# setting constants
+
+G  = 6.67e-11
+Ma = 2.0e30
+Mb = 4.0e30
+AU = 1.5e11
+daysec = 24.0*60*60
+
+gravconst = G*Ma*Mb
+
+# starting conditions
+
+# item 1
+
+xa= 0
+ya = 0
+za = 0
+
+xva =0 
+yva = 0 
+zva = 0 
+
+# black hole
+xb = 1.0 *AU 
+yb = 0.0 
+zb= 0.0 
+
+xvb = 0 
+yvb = 10000.0 
+zvb = 0 
+
+t= 0.0 
+dt = 0.01 *daysec
+
+xalist = []
+yalist = []
+
+xblist = []
+yblist = []
+
+# loop
+
+while t < 1000.0 *daysec:
+        
+        #compute force
+        rx = xb -xa 
+        ry = yb -ya 
+        rz = zb -za 
+    
+        modr3=(rx**2+ry**2+rz**2)**1.5
+        
+        fx =  -gravconst*rx/modr3
+        fy =  -gravconst*ry/modr3
+        fz =  -gravconst*rz/modr3
+    
+        # update the quantities
+        
+        xvb += fx*dt/Mb
+        yvb += fy*dt/Mb
+        zvb += fz*dt/Mb
+
+        xb += xvb *dt
+        yb += yvb *dt
+        zb += zvb *dt
+        
+        xva += -fx*dt/Ma
+        yva += -fy*dt/Ma
+        zva += -fz*dt/Ma
+
+        xa += xva *dt
+        ya += yva *dt
+        za += zva *dt
+        t += dt
+        
+        # save them in lists
+        xalist.append(xa)
+        yalist.append(ya)
+
+        xblist.append(xb)
+        yblist.append(yb)
+
+
+
+# plot the results
+pylab.plot(xalist, yalist, "-g")
+pylab.plot(xblist, yblist, "-k")
+
+pylab.axis("equal")
+pylab.xlabel("x (m)")
+pylab.ylabel("y (m)")
+pylab.show()
+
+
